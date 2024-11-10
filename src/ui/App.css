@@ -5,7 +5,7 @@
     text-align: center;
 }
 
-.nav-bar {
+.tw-nav-bar {
     display: flex;
 }
 
@@ -21,7 +21,7 @@
     display: flex;
 }
 
-.container {
+.tw-container {
     display: flex;
     justify-content: center;
     border: 1px grey solid;

@@ -6,7 +6,7 @@ import { isDev } from "./util.js";
 // type test = string;
 const createWindow = () => {
     const mainWindow = new BrowserWindow({
-        width: 800,
+        width: 500,
         height: 600,
         webPreferences: {
             preload: path.join(app.getAppPath(), "src/electron/preload.cts"),
