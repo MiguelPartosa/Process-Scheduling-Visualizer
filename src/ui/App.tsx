@@ -7,7 +7,7 @@ function App() {
     // const val = window.myAPI;
     return (
         <>
-            <div className="tw-container">
+            <div className="container">
                 <div className="tw-nav-bar">navbar</div>
                 <div className="tw-job-slider">job slider</div>
                 <div className="tw-job-cycles">jobs input</div>

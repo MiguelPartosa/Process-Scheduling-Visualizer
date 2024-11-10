@@ -6,5 +6,5 @@ export default {
     },
     plugins: [],
     prefix: 'tw-',
-    // so that css doesn't get overriden
+    // clean class names
 };
