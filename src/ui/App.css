@@ -21,7 +21,7 @@
     display: flex;
 }
 
-.tw-container {
+.container {
     display: flex;
     justify-content: center;
     border: 1px grey solid;
