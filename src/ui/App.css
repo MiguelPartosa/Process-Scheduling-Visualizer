@@ -5,7 +5,7 @@
     text-align: center;
 }
 
-.tw-nav-bar {
+.nav-bar {
     display: flex;
 }
 
@@ -23,8 +23,10 @@
 
 .container {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     border: 1px grey solid;
     flex-direction: column;
     align-items: center;
+    min-width: 400px;
+    min-height:450px;
 }
