@@ -1,32 +1,45 @@
 #root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 
 .nav-bar {
-    display: flex;
+  display: flex;
 }
 
 .job-slider {
-    display: flex;
+  display: flex;
 }
 
 .job-cycles {
-    display: flex;
+  display: flex;
 }
 
 .main-buttons {
-    display: flex;
+  display: flex;
 }
 
 .container {
-    display: flex;
-    justify-content: start;
-    border: 1px grey solid;
-    flex-direction: column;
-    align-items: center;
-    min-width: 400px;
-    min-height:450px;
+  display: flex;
+  justify-content: start;
+  border: 1px grey solid;
+  flex-direction: column;
+  align-items: center;
+  min-width: 400px;
+  min-height: 450px;
 }
+/* 
+input[type="range"]::-webkit-slider-thumb {
+  background: #4a5568;
+  height: 8px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #cbd5e0;
+  height: 8px;
+border-radius: 4px; 
+} */
