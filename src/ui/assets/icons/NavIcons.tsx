@@ -1,5 +1,5 @@
 const createIcon =
-  (path) =>
+  (path : string) =>
   ({ className = "", ...props }) =>
     (
       <svg
