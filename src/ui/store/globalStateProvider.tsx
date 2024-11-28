@@ -1,13 +1,14 @@
 import { useState, createContext } from "react";
 
-type GeneralContextType = {
+export type GeneralContextType = {
   jobs: Array<number>;
   jobType: number;
   updateJob: (jobnumber: number) => void;
   updateJobType: (jobtype: number) => void;
+  changeJobDuration: (jobduration: number, jobindex: number) => void;
 };
 
-const GeneralContext = createContext<GeneralContextType | null>(null);
+export const GeneralContext = createContext<GeneralContextType | null>(null);
 
 // Gives jobtypes 0~3 and a 1~5 element array of 0 and 1+
 const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -39,9 +40,28 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
     } else console.log("Job type index out of range(0~3): " + jobtype);
   };
 
+  const changeJobDuration = (jobduration: number, jobindex: number) => {
+    const newJobs = jobs.map((job, index) =>
+      index === jobindex ? jobduration : job
+    );
+    if (!(jobindex >= 0 && jobindex <= 4)) {
+      console.log("Job duration index out of range");
+    } else if (jobduration < 1) {
+      console.log("Job duration must be greater than 1");
+    } else {
+      setJobs(newJobs);
+    }
+  };
+
   return (
     <GeneralContext.Provider
-      value={{ jobs, jobType, updateJob, updateJobType }}
+      value={{
+        jobs,
+        jobType,
+        updateJob,
+        updateJobType,
+        changeJobDuration,
+      }}
     >
       {children}
     </GeneralContext.Provider>
