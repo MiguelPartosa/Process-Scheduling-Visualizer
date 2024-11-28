@@ -9,112 +9,128 @@ import {
   IconSJN,
 } from "./assets/icons/NavIcons.tsx";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { NavIconButton } from "./components/NavIconButton.tsx";
+import { Link } from "react-router-dom";
 
-type NavIconProps = {
+export type NavIconProps = {
   IconComponent: React.ComponentType<{ className?: string }>;
   label: string;
   setJob?: () => void;
-  isActive: boolean;
+  className?: string;
 };
-
-const NavIconButton: React.FC<NavIconProps> = ({
-  IconComponent,
-  label,
-  setJob,
-  isActive,
-}) => (
-  <div
-    className="tw-text-gray-500 hover:tw-text-white tw-font-bold hover:tw-scale-125 tw-ease-in-out tw-delay-10 tw-duration-500 tw-flex tw-flex-col tw-justify-center tw-w-20 hover:tw-cursor-pointer ${isActive ? 'tw-bg-blue-500 tw-text-white' : 'tw-text-gray-400 hover:tw-bg-neutral-700'"
-    onClick={setJob}
-  >
-    <IconComponent className="tw-self-center tw-fill-current" />
-    <div className="tw-text-center">{label}</div>
-  </div>
-);
 
 function App() {
   const [jobs, setJobs] = useState(1);
   const [jobType, setJobType] = useState(0); // 0 to 4 FCFS to RR
+  // const [jobsTime, setJobsTime] = useState([]);
 
+  const styleActive =
+    "tw-shadow-lg tw-bg-slate-500 tw-text-gray-800 tw-rounded-full";
   return (
     <>
       <div>Currently Selected {jobType}</div>
       <div className="container">
-        <div className="tw-group tw-min-w-300 tw-flex tw-justify-evenly  tw-w-11/12 tw-py-2 tw-mb-2 hover:tw-bg-neutral-800 tw-rounded-lg hover:tw-shadow-2xl tw-transition-all tw-ease-in-out tw-delay-10 tw-duration-500 after:tw-bg-slate-50">
+        <div className="tw-group tw-min-w-300 tw-flex tw-justify-evenly  tw-w-11/12 tw-py-2 tw-mb-2 hover:tw-bg-neutral-800 tw-rounded-full hover:tw-shadow-2xl tw-transition-all tw-ease-in-out tw-delay-10 tw-duration-500 after:tw-bg-slate-50">
           <NavIconButton
             IconComponent={IconFCFS}
             label="FCFS"
             setJob={() => setJobType(0)}
-            isActive={jobType === 2}
+            className={jobType === 0 ? styleActive : ""}
           />
           <NavIconButton
             IconComponent={IconSJN}
             label="SJN"
             setJob={() => setJobType(1)}
+            className={jobType === 1 ? styleActive : ""}
           />
           <NavIconButton
             IconComponent={IconSRT}
             label="SRT"
             setJob={() => setJobType(2)}
+            className={jobType === 2 ? styleActive : ""}
           />
           <NavIconButton
             IconComponent={IconRoundRobin}
             label="Round Robin"
             setJob={() => setJobType(3)}
+            className={jobType === 3 ? styleActive : ""}
           />
         </div>
 
         {/* Job Slider */}
-        <div className="tw-flex tw-flex-col tw-my-10  tw-justify-center ">
-          <div className="tw-flex  tw-justify-between tw-w-52 tw-self-center tw-font-semibold">
-            <label className="tw-text-lg">Jobs</label>
-            <label className="tw-text-left tw-text-gray-500 tw-font-light tw-text-xs tw-self-center">
-              Number of jobs
-            </label>
-          </div>
-          <div className="tw-relative tw-mb-2 tw-w-52">
+        {JobSlider()}
+
+        {/* Jobs Input */}
+        <div className="">
+          <div className="tw-flex tw-flex-col">
+            <label className="tw-font-semibold"> Job A</label>
             <input
-              name="jobs"
-              type="range"
-              min="1"
-              max="5"
-              defaultValue={jobs}
-              className="tw-w-full tw-appearance-none tw-accent-gray-600 tw-ease-in-out tw-delay-10 tw-duration-500 focus:tw-accent-white  tw-bg-gray-700 hover:tw-bg-gray-900 tw-h-2 hover:tw-accent-slate-500 tw-mt-2 tw-shadow-lg tw-shadow-gray-900 tw-cursor-pointer tw-rounded-full"
-              onChange={(e) => setJobs(e.target.value)}
+              type="number"
+              className="tw-bg-gray-950 tw-shadow-inner tw-border tw-border-gray-400 tw-rounded-md tw-indent-2 tw-text-slate-300 tw-w-10 tw-font-black"
+              placeholder="1+"
             />
-            <div className="tw-text-sm tw-text-gray-500 dark:text-gray-400 tw-flex tw-justify-between tw-flex-row tw-w-full">
-              {Array.from({ length: 5 }, (_, index) => {
-                return index + 1 == jobs ? (
-                  <span
-                    key={index}
-                    className="tw-bg-neutral-800 tw-shadow-md tw-shadow-gray-900 tw-scale-150 tw-ease-in-out  tw-duration-300 tw-transition-all tw-rounded-md tw-translate-y-1"
-                  >
-                    {index + 1}
-                  </span>
-                ) : (
-                  <span
-                    key={index}
-                    className="tw-ease-in tw-delay-150 tw-transition-all"
-                  >
-                    {index + 1}
-                  </span>
-                );
-              })}
-            </div>
           </div>
         </div>
 
-        <div className="job-cycles">jobs input</div>
-        <div className="job-cycles">{jobs} number of jobs</div>
+        <div className={`tw-font-thin`}>{jobs} number of jobs</div>
         <div className="main-buttons"></div>
-        <div className="tw-flex tw-flex-row tw-border tw-w-72 tw-justify-between tw-mt-auto tw-mb-12">
-          <div>Reset Values</div>
-          <div> Calculate</div>
+        <div className="tw-flex tw-flex-row tw-border tw-w-64 tw-justify-between tw-mt-auto tw-mb-6 tw-py-3 tw-items-center">
+          <div className="tw-cursor-pointer tw-bg-slate-400 tw-text-gray-800 tw-font-bold tw-px-1 tw-rounded-sm tw-h-6 tw-text-sm tw-self-center">
+            Reset Values
+          </div>
+          <Link to="/Calculations">
+            <div className="tw-cursor-pointer tw-bg-slate-500 tw-text-slate-200 tw-font-bold tw-py-1 tw-px-6 tw-rounded-full tw-text-lg">
+              Calculate
+            </div>
+          </Link>
         </div>
       </div>
     </>
   );
+
+  function JobSlider() {
+    return (
+      <div className="tw-flex tw-flex-col tw-my-10 tw-h-24">
+        <div className="tw-flex  tw-justify-between tw-w-52 tw-self-center tw-font-semibold">
+          <label className="tw-text-lg">Jobs</label>
+          <label className="tw-text-left tw-text-gray-500 tw-font-light tw-text-xs tw-self-center">
+            Number of jobs
+          </label>
+        </div>
+        <div className="tw-relative tw-mb-2 tw-w-52">
+          <input
+            name="jobs"
+            type="range"
+            min="1"
+            max="5"
+            defaultValue={jobs}
+            className="tw-w-full tw-appearance-none tw-accent-gray-600 tw-ease-in-out tw-delay-10 tw-duration-500 focus:tw-accent-white  tw-bg-gray-700 hover:tw-bg-gray-900 tw-h-2 hover:tw-accent-slate-500 tw-mt-2 tw-shadow-lg tw-shadow-gray-900 tw-cursor-pointer tw-rounded-full"
+            onChange={(e) => setJobs(Number(e.target.value))}
+          />
+          <div className="tw-text-sm tw-text-gray-500 dark:text-gray-400 tw-flex tw-justify-between tw-flex-row tw-w-full">
+            {Array.from({ length: 5 }, (_, index) => {
+              return index + 1 == jobs ? (
+                <span
+                  key={index}
+                  className="tw-bg-neutral-800 tw-shadow-md tw-shadow-gray-900 tw-scale-150 tw-ease-in-out tw-font-semibold tw-duration-300 tw-transition-all tw-rounded-md tw-translate-y-1 tw-px-1"
+                >
+                  {index + 1}
+                </span>
+              ) : (
+                <span
+                  key={index}
+                  className="tw-ease-in tw-font-semibold tw-text-xs tw-duration-500 tw-transition-all"
+                >
+                  {index + 1}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
