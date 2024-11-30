@@ -5,8 +5,11 @@ import {
 } from "../store/globalStateProvider";
 
 const JobSlider = () => {
-  const { jobs, updateJob } = useContext(GeneralContext) as GeneralContextType;
-  const totalJobs = jobs.filter((job) => job !== 0).length;
+  const {
+    jobs: { jobTime },
+    updateJob,
+  } = useContext(GeneralContext) as GeneralContextType;
+  const totalJobs = jobTime.filter((job) => job !== 0).length;
   return (
     <div className="tw-flex tw-flex-col tw-my-4 tw-h-24 tw-border tw-min-h-24">
       <div className="tw-flex  tw-justify-between tw-w-52 tw-self-center tw-font-semibold">
@@ -25,7 +28,8 @@ const JobSlider = () => {
           className="tw-w-full tw-appearance-none tw-accent-gray-600 tw-ease-in-out tw-delay-10 tw-duration-500 focus:tw-accent-white  tw-bg-gray-700 hover:tw-bg-gray-900 tw-h-2 hover:tw-accent-slate-500 tw-mt-2 tw-shadow-lg tw-shadow-gray-900 tw-cursor-pointer tw-rounded-full"
           onChange={(e) => updateJob(Number(e.target.value) - 1)}
         />
-        <div className="tw-text-sm tw-text-gray-500 dark:text-gray-400 tw-flex tw-justify-between tw-flex-row tw-w-full">
+        {/* Numbers */}
+        <div className="tw-text-sm tw-text-gray-300 dark:text-gray-400 tw-flex tw-justify-between tw-flex-row tw-w-full">
           {Array.from({ length: 5 }, (_, index) => {
             return index + 1 == totalJobs ? (
               <span

@@ -1,11 +1,21 @@
 import { useState, createContext } from "react";
 
+type JobStates = {
+  jobTime: Array<number>;
+  quantumTime: number;
+};
+
+// typescript is weird. quantum is an optional param here so we don't get errors when calling changejobduration function  
 export type GeneralContextType = {
-  jobs: Array<number>;
+  jobs: JobStates;
   jobType: number;
   updateJob: (jobnumber: number) => void;
   updateJobType: (jobtype: number) => void;
-  changeJobDuration: (jobduration: number, jobindex: number) => void;
+  changeJobDuration: (
+    jobduration: number,
+    jobindex: number | undefined,
+    quantum?: boolean
+  ) => void;
 };
 
 export const GeneralContext = createContext<GeneralContextType | null>(null);
@@ -17,12 +27,15 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
   // first jobtype is fcfs
   const [jobType, setJobType] = useState(0);
   // default value, minimum nubmer of jobs is one
-  const [jobs, setJobs] = useState([1, 0, 0, 0, 0]);
+  const [jobs, setJobs] = useState<JobStates>({
+    jobTime: [1, 0, 0, 0, 0],
+    quantumTime: 0,
+  });
 
   // 0 = ignore this job in caclulation
   const updateJob = (jobnumber: number) =>
-    setJobs((jobs) => {
-      const updatedJobs: Array<number> = jobs.map((job, index) => {
+    setJobs((prevJob) => {
+      const updatedJobs: Array<number> = prevJob.jobTime.map((job, index) => {
         // condition for bringing upper jobs to 0 when lowering the slider
         if (index <= jobnumber) {
           return job === 0 ? 1 : job;
@@ -31,7 +44,7 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
           return 0;
         }
       });
-      return updatedJobs;
+      return { ...prevJob, jobTime: updatedJobs };
     });
 
   const updateJobType = (jobtype: number) => {
@@ -40,16 +53,29 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
     } else console.log("Job type index out of range(0~3): " + jobtype);
   };
 
-  const changeJobDuration = (jobduration: number, jobindex: number) => {
-    const newJobs = jobs.map((job, index) =>
+  // TODO: message component to show error messages for bad inputs
+
+  const changeJobDuration = (
+    jobduration: number,
+    jobindex?: number,
+    quantum: boolean = false
+  ) => {
+    const newJobs = jobs.jobTime.map((job, index) =>
       index === jobindex ? jobduration : job
     );
-    if (!(jobindex >= 0 && jobindex <= 4)) {
+    const index = jobindex !== undefined ? jobindex : 0;
+    if (!(index >= 0 && index <= 4)) {
       console.log("Job duration index out of range");
-    } else if (jobduration < 1) {
+      return;
+    }
+    if (jobduration < 1) {
       console.log("Job duration must be greater than 1");
+      return;
+    }
+    if (quantum) {
+      setJobs({ ...jobs, quantumTime: jobduration });
     } else {
-      setJobs(newJobs);
+      setJobs({ ...jobs, jobTime: newJobs });
     }
   };
 

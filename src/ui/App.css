@@ -31,16 +31,3 @@
   min-height: 450px;
   max-height: 470px;
 }
-/* 
-input[type="range"]::-webkit-slider-thumb {
-  background: #4a5568;
-  height: 8px;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-}
-
-input[type="range"]::-webkit-slider-runnable-track {
-  background: #cbd5e0;
-  height: 8px;
-border-radius: 4px; 
-} */

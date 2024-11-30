@@ -28,10 +28,12 @@ export type NavIconProps = {
 };
 
 function App() {
-  const { jobs, jobType, updateJobType } = useContext(
-    GeneralContext
-  ) as GeneralContextType;
-  const totalJobs = jobs.filter((num) => num != 0).length;
+  const {
+    jobs: { jobTime },
+    jobType,
+    updateJobType,
+  } = useContext(GeneralContext) as GeneralContextType;
+  const totalJobs = jobTime.filter((num) => num != 0).length;
   const styleActive =
     "tw-shadow-lg tw-bg-slate-500 tw-text-gray-800 tw-rounded-full";
   const activateStyle = (index: number) => {
