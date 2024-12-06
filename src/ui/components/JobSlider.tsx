@@ -9,7 +9,7 @@ const JobSlider = () => {
     jobs: { jobTime },
     updateJob,
   } = useContext(GeneralContext) as GeneralContextType;
-  const totalJobs = jobTime.filter((job) => job !== 0).length;
+  const totalJobs = jobTime.filter((job) => job !== -1).length;
   return (
     <div className="tw-flex tw-flex-col tw-my-4 tw-h-24 tw-border tw-min-h-24">
       <div className="tw-flex  tw-justify-between tw-w-52 tw-self-center tw-font-semibold">
