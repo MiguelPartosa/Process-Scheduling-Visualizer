@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer base { 
+@layer base {
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"] {
@@ -11,6 +11,11 @@
   }
 }
 /* Removing arrows from number input */
+/* Disable text dragging globally */
+* {
+  user-select: none;
+  -webkit-user-drag: none;
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

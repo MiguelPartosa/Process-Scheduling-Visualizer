@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 
 import App from "./App.tsx";
-import Calculations from "./Calculation.tsx";
+import Calculations from "./page/Calculation.tsx";
 
 import { Router } from "../electron/lib/electron-router-dom";
 import { Route } from "react-router-dom";

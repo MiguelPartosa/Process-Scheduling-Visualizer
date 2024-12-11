@@ -11,7 +11,7 @@ const JobSlider = () => {
   } = useContext(GeneralContext) as GeneralContextType;
   const totalJobs = jobTime.filter((job) => job !== -1).length;
   return (
-    <div className="tw-flex tw-flex-col tw-my-4 tw-h-24 tw-border tw-min-h-24">
+    <div className="tw-flex tw-flex-col tw-h-24 tw-min-h-24">
       <div className="tw-flex  tw-justify-between tw-w-52 tw-self-center tw-font-semibold">
         <label className="tw-text-lg">Jobs</label>
         <label className="tw-text-left tw-text-gray-500 tw-font-light tw-text-xs tw-self-center">

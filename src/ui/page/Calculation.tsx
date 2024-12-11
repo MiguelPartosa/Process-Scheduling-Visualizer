@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import {
   GeneralContext,
   GeneralContextType,
-} from "./store/globalStateProvider";
+} from "../store/globalStateProvider";
 
 function Calculations() {
   const { jobs } = useContext(GeneralContext) as GeneralContextType;

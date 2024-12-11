@@ -21,6 +21,7 @@ export type GeneralContextType = {
     arrivaltime: number,
     jobindex: number | undefined
   ) => void;
+  randomizeValues: (isJob: boolean) => void;
 };
 
 export const GeneralContext = createContext<GeneralContextType | null>(null);
@@ -35,32 +36,42 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [jobs, setJobs] = useState<JobStates>({
     jobTime: [1, -1, -1, -1, -1],
     arrivalTime: [0, -1, -1, -1, -1],
-    quantumTime: 0,
+    quantumTime: 1,
   });
+
+  const randomizeValues = () => {
+    const generateRandomValue = () => Math.ceil(Math.random() * 99);
+    const newJobs = jobs.jobTime.map((job) =>
+      job !== -1 ? generateRandomValue() : job
+    );
+    const newArrival = jobs.arrivalTime.map((job) =>
+      job !== -1 ? generateRandomValue() : job
+    );
+    setJobs((prevjobs) => ({
+      ...prevjobs,
+      jobTime: newJobs,
+      arrivalTime: newArrival,
+    }));
+  };
 
   // For uniformity sake, ignored jobs and arrival times are valued -1
   // updates both jobs and arrival time values
   const updateJob = (jobnumber: number) =>
     setJobs((prevJob) => {
       // condition for both
-      const updateValue = (value: number, index: number, initial:number): number => {
+      const updateValue = (
+        value: number,
+        index: number,
+        initial: number
+      ): number => {
         return index <= jobnumber ? (value === -1 ? initial : value) : -1;
       };
-    
+
       for (let i = 0; i < 5; i++) {
         prevJob.jobTime[i] = updateValue(prevJob.jobTime[i], i, 1);
         prevJob.arrivalTime[i] = updateValue(prevJob.arrivalTime[i], i, 0);
       }
-      // const updatedJobs: Array<number> = prevJob.jobTime.map((job, index) => {
-      //   // condition for bringing upper jobs to 0 when lowering the slider
-      //   if (index <= jobnumber) {
-      //     return job === 0 ? 1 : job;
-      //   } else {
-      //     // setting the jobs to 1 or prev value if less jobnumber >= job
-      //     return -1;
-      //   }
-      // });
-      return { ...prevJob};
+      return { ...prevJob };
     });
 
   const updateJobType = (jobtype: number) => {
@@ -76,16 +87,15 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
     jobindex?: number,
     quantum: boolean = false
   ) => {
+    if (jobduration < 1) {
+      jobduration = 1;
+    }
     const newJobs = jobs.jobTime.map((job, index) =>
       index === jobindex ? jobduration : job
     );
     const index = jobindex !== undefined ? jobindex : 0;
     if (!(index >= 0 && index <= 4)) {
       console.log("Job duration index out of range");
-      return;
-    }
-    if (jobduration < 1) {
-      console.log("Job duration must be greater than 1");
       return;
     }
     if (quantum) {
@@ -104,11 +114,12 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log("Arrival time index out of range");
       return;
     }
-    if (arrivaltime < 0) {
-      console.log("Arrival time must be greater than 0");
-      return;
-    }
-    setJobs({ ...jobs, arrivalTime: newJobs });
+    setJobs((prevJobs) => {
+      return {
+        ...prevJobs,
+        arrivalTime: newJobs,
+      };
+    });
   };
 
   return (
@@ -120,6 +131,7 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
         updateJobType,
         changeJobDuration,
         changeArrivalTime,
+        randomizeValues,
       }}
     >
       {children}
