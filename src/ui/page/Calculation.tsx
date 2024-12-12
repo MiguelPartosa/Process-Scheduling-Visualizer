@@ -12,6 +12,7 @@ import {
   ShortestJobNext,
   ShortestRemainingTime,
 } from "./CalculationAlgorithms";
+import JobChart from "./Chart";
 
 const Calculations = () => {
   const { jobs, jobType } = useContext(GeneralContext) as GeneralContextType;
@@ -87,7 +88,7 @@ const Calculations = () => {
               })()}
             </tbody>
           </table>
-
+          <JobChart jobs={jobs.jobDetails.slice(0, jobs.totalJobs)} />
           <div className="tw-border tw-h-14"> Box</div>
         </div>
       </>
