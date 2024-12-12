@@ -26,7 +26,6 @@ const JobInput = () => {
             type === InputType.jobCycleTime
               ? jobs.jobDetails[index].jobTime
               : jobs.jobDetails[index].arrivalTime;
-          console.log(index, jobs.totalJobs);
           return (
             <div key={index}>
               <div className="tw-flex tw-flex-col   tw-p-2 tw-py-0 tw-m-2">

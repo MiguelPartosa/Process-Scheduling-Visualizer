@@ -1,17 +1,23 @@
 import { useState, createContext } from "react";
 
-type Job = {
+export type Job = {
   jobName: string;
   jobTime: number;
   arrivalTime: number;
 };
 
-type JobStates = {
+export type JobStates = {
   quantumTime: number;
   jobDetails: Job[];
   totalJobs: number;
 };
 
+export enum AlgorithmType {
+  FirstComeFirstServe = 0,
+  ShortestJobNext = 1,
+  ShortestRemainingTime = 2,
+  RoundRobin = 3,
+}
 export enum InputType {
   jobCycleTime = "job",
   arrivalTime = "arrival",
@@ -145,7 +151,6 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
         updateJobCount,
         updateJobType,
         changeJobDetails,
-
         randomizeValues,
       }}
     >

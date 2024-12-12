@@ -19,7 +19,7 @@ import { NavIconButton } from "./components/NavIconButton.tsx";
 import { Link } from "react-router-dom";
 import JobSlider from "./components/JobSlider.tsx";
 import JobInput from "./components/JobInput.tsx";
-import Calc from "./tempCalc.tsx";
+import Calculations from "./page/Calculation.tsx";
 
 export type NavIconProps = {
   IconComponent: React.ComponentType<{ className?: string }>;
@@ -81,7 +81,8 @@ function App() {
             Randomize Jobs
           </div>
           <Link
-            to="/Calculations"
+            // to="/Calculations"
+            to=""
             onClick={(e) => {
               e.preventDefault();
             }}
@@ -92,7 +93,7 @@ function App() {
           </Link>
         </div>
       </div>
-      <Calc />
+      <Calculations />
     </>
   );
 }
