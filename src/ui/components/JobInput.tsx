@@ -2,15 +2,13 @@ import { useContext } from "react";
 import {
   GeneralContext,
   GeneralContextType,
+  InputType,
 } from "../store/globalStateProvider";
-const ALPHABETS = ["A", "B", "C", "D", "E"];
 
 const JobInput = () => {
-  const { jobs, changeJobDuration, changeArrivalTime, jobType } = useContext(
+  const { jobs, changeJobDetails, jobType } = useContext(
     GeneralContext
   ) as GeneralContextType;
-
-  const totalJobs = jobs.jobTime.filter((job) => job !== -1).length;
 
   /**
    *  Returns cells that correspond to input based on string argument "jobArrival" or "job"
@@ -18,50 +16,46 @@ const JobInput = () => {
    * @param {string} type
    * @return {*}
    */
-  const inputCells = (type: string) => {
+  const inputCells = (type: InputType) => {
     let min: number;
-    // jobs.jobTime or jobs.arrivalTime
-    let valueStatus: Array<number>;
-    let changeValue: (value: number, index: number) => void;
-    if (type === "jobArrival") {
-      min = 0;
-      valueStatus = jobs.arrivalTime;
-      changeValue = changeArrivalTime;
-    } else if (type === "job") {
-      min = 1;
-      valueStatus = jobs.jobTime;
-      changeValue = changeJobDuration;
-    } else {
-      return <div>Error, either jobarrival or job</div>;
-    }
+
     return (
       <div className="tw-flex-row tw-flex">
-        {Array.from({ length: 5 }, (_, index) => (
-          <div key={index}>
-            <div className="tw-flex tw-flex-col   tw-p-2 tw-py-0 tw-m-2">
-              <label
-                className={`${
-                  index >= totalJobs ? "tw-text-slate-600" : ""
-                } tw-font-semibold tw-transition-all tw-ease-in-out tw-duration-500`}
-              >
-                {ALPHABETS[index]}
-              </label>
-              <input
-                type="number"
-                className={`${
-                  index >= totalJobs
-                    ? "tw-text-slate-600 tw-border-slate-700 "
-                    : ""
-                } tw-bg-gray-950 tw-shadow-inner tw-border tw-border-gray-500 tw-rounded-md tw-indent-2 tw-text-slate-300 tw-w-10 tw-font-black focus:tw-text-slate-50`}
-                placeholder="∅"
-                min={min}
-                value={valueStatus[index] === -1 ? "" : valueStatus[index]}
-                onChange={(e) => changeValue(Number(e.target.value), index)}
-                disabled={index >= totalJobs}
-              />
+        {Array.from({ length: 5 }, (_, index) => {
+          const currentValue =
+            type === InputType.jobCycleTime
+              ? jobs.jobDetails[index].jobTime
+              : jobs.jobDetails[index].arrivalTime;
+          console.log(index, jobs.totalJobs);
+          return (
+            <div key={index}>
+              <div className="tw-flex tw-flex-col   tw-p-2 tw-py-0 tw-m-2">
+                <label
+                  className={`${
+                    index >= jobs.totalJobs ? "tw-text-slate-600" : ""
+                  } tw-font-semibold tw-transition-all tw-ease-in-out tw-duration-500`}
+                >
+                  {jobs.jobDetails[index].jobName}
+                </label>
+                <input
+                  type="number"
+                  className={`${
+                    index >= jobs.totalJobs
+                      ? "tw-text-slate-600 tw-border-slate-700 "
+                      : ""
+                  } tw-bg-gray-950 tw-shadow-inner tw-border tw-border-gray-500 tw-rounded-md tw-indent-2 tw-text-slate-300 tw-w-10 tw-font-black focus:tw-text-slate-50`}
+                  placeholder="∅"
+                  min={min}
+                  value={index + 1 > jobs.totalJobs ? "" : currentValue}
+                  onChange={(e) =>
+                    changeJobDetails(Number(e.target.value), type, index)
+                  }
+                  disabled={index >= jobs.totalJobs}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
@@ -72,11 +66,11 @@ const JobInput = () => {
         Job Cycle
       </div>
 
-      {inputCells("job")}
+      {inputCells(InputType.jobCycleTime)}
       <div className="tw-text-left tw-text-gray-500 tw-font-medium tw-text-sm tw-pl-7 tw-mt-4">
         Job Arrival Time
       </div>
-      {inputCells("jobArrival")}
+      {inputCells(InputType.arrivalTime)}
 
       {/* Shows Round Robin Time Quantum */}
       <div
@@ -95,7 +89,7 @@ const JobInput = () => {
             min={1}
             value={jobs.quantumTime}
             onChange={(e) =>
-              changeJobDuration(Number(e.target.value), undefined, true)
+              changeJobDetails(Number(e.target.value), InputType.quantumTime)
             }
           />
         </div>

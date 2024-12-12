@@ -5,11 +5,9 @@ import {
 } from "../store/globalStateProvider";
 
 const JobSlider = () => {
-  const {
-    jobs: { jobTime },
-    updateJob,
-  } = useContext(GeneralContext) as GeneralContextType;
-  const totalJobs = jobTime.filter((job) => job !== -1).length;
+  const { jobs, updateJobCount } = useContext(
+    GeneralContext
+  ) as GeneralContextType;
   return (
     <div className="tw-flex tw-flex-col tw-h-24 tw-min-h-24">
       <div className="tw-flex  tw-justify-between tw-w-52 tw-self-center tw-font-semibold">
@@ -24,14 +22,14 @@ const JobSlider = () => {
           type="range"
           min="1"
           max="5"
-          defaultValue={totalJobs}
+          defaultValue={jobs.totalJobs}
           className="tw-w-full tw-appearance-none tw-accent-gray-600 tw-ease-in-out tw-delay-10 tw-duration-500 focus:tw-accent-white  tw-bg-gray-700 hover:tw-bg-gray-900 tw-h-2 hover:tw-accent-slate-500 tw-mt-2 tw-shadow-lg tw-shadow-gray-900 tw-cursor-pointer tw-rounded-full"
-          onChange={(e) => updateJob(Number(e.target.value) - 1)}
+          onChange={(e) => updateJobCount(Number(e.target.value))}
         />
         {/* Numbers */}
         <div className="tw-text-sm tw-text-gray-300 dark:text-gray-400 tw-flex tw-justify-between tw-flex-row tw-w-full">
           {Array.from({ length: 5 }, (_, index) => {
-            return index + 1 == totalJobs ? (
+            return index + 1 == jobs.totalJobs ? (
               <span
                 key={index}
                 className="tw-bg-neutral-800 tw-shadow-md tw-shadow-gray-900 tw-scale-150 tw-ease-in-out tw-font-semibold tw-duration-300 tw-transition-all tw-rounded-md tw-translate-y-1 tw-px-1"

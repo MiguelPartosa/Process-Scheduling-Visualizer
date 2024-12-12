@@ -80,7 +80,12 @@ function App() {
           >
             Randomize Jobs
           </div>
-          <Link to="/Calculations" onClick={(e) => e.preventDefault()}>
+          <Link
+            to="/Calculations"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
             <div className="tw-cursor-pointer tw-bg-slate-500 tw-text-slate-200 tw-font-bold tw-py-1 tw-px-6 tw-rounded-full tw-text-lg">
               Calculate
             </div>

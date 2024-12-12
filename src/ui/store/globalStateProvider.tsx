@@ -1,25 +1,33 @@
 import { useState, createContext } from "react";
 
-type JobStates = {
-  jobTime: Array<number>;
-  arrivalTime: Array<number>;
-  quantumTime: number;
+type Job = {
+  jobName: string;
+  jobTime: number;
+  arrivalTime: number;
 };
+
+type JobStates = {
+  quantumTime: number;
+  jobDetails: Job[];
+  totalJobs: number;
+};
+
+export enum InputType {
+  jobCycleTime = "job",
+  arrivalTime = "arrival",
+  quantumTime = "quantum",
+}
 
 // typescript is weird. quantum is an optional param here so we don't get errors when calling changejobduration function
 export type GeneralContextType = {
   jobs: JobStates;
   jobType: number;
-  updateJob: (jobnumber: number) => void;
+  updateJobCount: (jobnumber: number) => void;
   updateJobType: (jobtype: number) => void;
-  changeJobDuration: (
-    jobduration: number,
-    jobindex: number | undefined,
-    quantum?: boolean
-  ) => void;
-  changeArrivalTime: (
-    arrivaltime: number,
-    jobindex: number | undefined
+  changeJobDetails: (
+    value: number,
+    inputType: InputType,
+    valueIndex?: number
   ) => void;
   randomizeValues: (isJob: boolean) => void;
 };
@@ -30,94 +38,101 @@ export const GeneralContext = createContext<GeneralContextType | null>(null);
 const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // first jobtype is fcfs
   const [jobType, setJobType] = useState(0);
-  // default value, minimum nubmer of jobs is one
+  // Values are set in advance since we're limiting the number of jobs to 5, it's easier this way
   const [jobs, setJobs] = useState<JobStates>({
-    jobTime: [1, -1, -1, -1, -1],
-    arrivalTime: [0, -1, -1, -1, -1],
+    jobDetails: [
+      { jobName: "A", arrivalTime: 0, jobTime: 1 },
+      { jobName: "B", arrivalTime: 0, jobTime: 1 },
+      { jobName: "C", arrivalTime: 0, jobTime: 1 },
+      { jobName: "D", arrivalTime: 0, jobTime: 1 },
+      { jobName: "E", arrivalTime: 0, jobTime: 1 },
+    ],
     quantumTime: 1,
+    totalJobs: 1,
   });
 
+  /**
+   * Randomizes job cycles and arrival times for available jobs
+   *
+   */
   const randomizeValues = () => {
-    const generateRandomValue = () => Math.ceil(Math.random() * 99);
-    const newJobs = jobs.jobTime.map((job) =>
-      job !== -1 ? generateRandomValue() : job
-    );
-    const newArrival = jobs.arrivalTime.map((job) =>
-      job !== -1 ? generateRandomValue() : job
-    );
+    const generateRandomValue = () => Math.ceil(Math.random() * 15);
+    const newJobDetails = jobs.jobDetails.map((job) => ({
+      jobTime: job.jobTime !== -1 ? generateRandomValue() : job.jobTime,
+      arrivalTime:
+        job.arrivalTime !== -1 ? generateRandomValue() : job.arrivalTime,
+      jobName: job.jobName,
+    }));
     setJobs((prevjobs) => ({
       ...prevjobs,
-      jobTime: newJobs,
-      arrivalTime: newArrival,
+      jobDetails: newJobDetails,
     }));
   };
 
-  // For uniformity sake, ignored jobs and arrival times are valued -1
-  // updates both jobs and arrival time values
-  const updateJob = (jobnumber: number) =>
+  /**
+   *  Used only for the jobslider, dictates the number of jobs to calculate.
+   *
+   * @param {number} jobnumber
+   */
+  const updateJobCount = (jobnumber: number) =>
     setJobs((prevJob) => {
-      // condition for both
-      const updateValue = (
-        value: number,
-        index: number,
-        initial: number
-      ): number => {
-        return index <= jobnumber ? (value === -1 ? initial : value) : -1;
-      };
-
-      for (let i = 0; i < 5; i++) {
-        prevJob.jobTime[i] = updateValue(prevJob.jobTime[i], i, 1);
-        prevJob.arrivalTime[i] = updateValue(prevJob.arrivalTime[i], i, 0);
-      }
-      return { ...prevJob };
+      return { ...prevJob, totalJobs: jobnumber };
     });
 
+  /**
+   *  Changes the type of algorithm to be used. Used only in navbar.
+   *
+   * @param {number} jobtype
+   */
   const updateJobType = (jobtype: number) => {
     if (jobtype >= 0 && jobtype <= 3) {
       setJobType(jobtype);
     } else console.log("Job type index out of range(0~3): " + jobtype);
   };
 
-  // TODO: message component to show error messages for bad inputs
-
-  const changeJobDuration = (
-    jobduration: number,
-    jobindex?: number,
-    quantum: boolean = false
+  /**
+   *  Changes value for input at optional index. Used for all number inputs.
+   *
+   * @param {number} value
+   * @param {InputType} inputType
+   * @param {number} [valueIndex]
+   */
+  const changeJobDetails = (
+    value: number,
+    inputType: InputType,
+    valueIndex?: number
   ) => {
-    if (jobduration < 1) {
-      jobduration = 1;
-    }
-    const newJobs = jobs.jobTime.map((job, index) =>
-      index === jobindex ? jobduration : job
-    );
-    const index = jobindex !== undefined ? jobindex : 0;
-    if (!(index >= 0 && index <= 4)) {
-      console.log("Job duration index out of range");
-      return;
-    }
-    if (quantum) {
-      setJobs({ ...jobs, quantumTime: jobduration });
-    } else {
-      setJobs({ ...jobs, jobTime: newJobs });
-    }
-  };
+    // Index may be undefined since we combined changing input values to all in one, including the non-indexed quantumTime
+    const index = valueIndex !== undefined ? valueIndex : 0;
 
-  const changeArrivalTime = (arrivaltime: number, jobindex?: number) => {
-    const newJobs = jobs.arrivalTime.map((time, index) =>
-      index === jobindex ? arrivaltime : time
-    );
-    const index = jobindex !== undefined ? jobindex : 0;
-    if (!(index >= 0 && index <= 4)) {
-      console.log("Arrival time index out of range");
-      return;
-    }
-    setJobs((prevJobs) => {
+    setJobs((prevJob) => {
+      const newJobDetails = [...prevJob.jobDetails];
+      const newJobValue = { ...prevJob.jobDetails[index] };
+      let newQuantumTime = prevJob.quantumTime;
+      switch (inputType) {
+        case InputType.jobCycleTime:
+          newJobValue.jobTime = value < 1 ? 1 : value;
+          newJobDetails[index] = newJobValue;
+          break;
+
+        case InputType.arrivalTime:
+          newJobValue.arrivalTime = value < 1 ? 0 : value;
+          newJobDetails[index] = newJobValue;
+          break;
+
+        case InputType.quantumTime:
+          newQuantumTime = value < 1 ? 1 : value;
+          break;
+
+        default:
+          console.error("Wrong input type");
+          break;
+      }
       return {
-        ...prevJobs,
-        arrivalTime: newJobs,
+        ...prevJob,
+        jobDetails: newJobDetails,
+        quantumTime: newQuantumTime,
       };
     });
   };
@@ -127,10 +142,10 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         jobs,
         jobType,
-        updateJob,
+        updateJobCount,
         updateJobType,
-        changeJobDuration,
-        changeArrivalTime,
+        changeJobDetails,
+
         randomizeValues,
       }}
     >
