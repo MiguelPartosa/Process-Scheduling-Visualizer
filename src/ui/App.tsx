@@ -1,5 +1,6 @@
 // import { useState, useRef } from "react";
 // import "./Globals.css";
+// TODO: implement pages
 import "./App.css";
 import "./index.css";
 import {
@@ -14,12 +15,12 @@ import {
   GeneralContextType,
 } from "./store/globalStateProvider";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { NavIconButton } from "./components/NavIconButton.tsx";
 import { Link } from "react-router-dom";
 import JobSlider from "./components/JobSlider.tsx";
 import JobInput from "./components/JobInput.tsx";
-import Calculations from "./page/Calculation.tsx";
+import { Calculations } from "./page/Calculation.tsx";
 
 export type NavIconProps = {
   IconComponent: React.ComponentType<{ className?: string }>;
@@ -32,6 +33,7 @@ function App() {
   const { jobType, updateJobType, randomizeValues } = useContext(
     GeneralContext
   ) as GeneralContextType;
+  const [showCalculation, setShowCalculation] = useState(false);
   const styleActive =
     "tw-shadow-lg tw-bg-slate-500 tw-text-gray-800 tw-rounded-full";
   const activateStyle = (index: number) => {
@@ -85,6 +87,8 @@ function App() {
             to=""
             onClick={(e) => {
               e.preventDefault();
+              setShowCalculation(true);
+              console.log("hello!");
             }}
           >
             <div className="tw-cursor-pointer tw-bg-slate-500 tw-text-slate-200 tw-font-bold tw-py-1 tw-px-6 tw-rounded-full tw-text-lg">
@@ -93,7 +97,7 @@ function App() {
           </Link>
         </div>
       </div>
-      <Calculations />
+      <Calculations showCalculation={showCalculation} />
     </>
   );
 }

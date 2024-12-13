@@ -17,7 +17,7 @@ const JobInput = () => {
    * @return {*}
    */
   const inputCells = (type: InputType) => {
-    let min: number;
+    // let min: number;
 
     return (
       <div className="tw-flex-row tw-flex">
@@ -44,7 +44,7 @@ const JobInput = () => {
                       : ""
                   } tw-bg-gray-950 tw-shadow-inner tw-border tw-border-gray-500 tw-rounded-md tw-indent-2 tw-text-slate-300 tw-w-10 tw-font-black focus:tw-text-slate-50`}
                   placeholder="∅"
-                  min={min}
+                  // min={}
                   value={index + 1 > jobs.totalJobs ? "" : currentValue}
                   onChange={(e) =>
                     changeJobDetails(Number(e.target.value), type, index)

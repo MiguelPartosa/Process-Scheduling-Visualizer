@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 
 import App from "./App.tsx";
-import Calculations from "./page/Calculation.tsx";
+// import { Calculations } from "./page/Calculation.tsx";
 
 import { Router } from "../electron/lib/electron-router-dom";
 import { Route } from "react-router-dom";
@@ -17,7 +17,7 @@ createRoot(document.getElementById("root")!).render(
         main={
           <>
             <Route path="/" element={<App />} />
-            <Route path="/Calculations" element={<Calculations />} />
+            {/* <Route path="/Calculations" element={<Calculations />} /> */}
           </>
         }
       />
