@@ -28,6 +28,8 @@ export enum InputType {
 export type GeneralContextType = {
   jobs: JobStates;
   jobType: number;
+  showCalculation: boolean;
+  setShowCalculation: (val: boolean | ((prevVal: boolean) => boolean)) => void;
   updateJobCount: (jobnumber: number) => void;
   updateJobType: (jobtype: number) => void;
   changeJobDetails: (
@@ -44,6 +46,7 @@ export const GeneralContext = createContext<GeneralContextType | null>(null);
 const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [showCalculation, setShowCalculation] = useState(false);
   const [jobType, setJobType] = useState(0);
   // Values are set in advance since we're limiting the number of jobs to 5, it's easier this way
   const [jobs, setJobs] = useState<JobStates>({
@@ -146,6 +149,8 @@ const GeneralContextProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <GeneralContext.Provider
       value={{
+        showCalculation,
+        setShowCalculation,
         jobs,
         jobType,
         updateJobCount,

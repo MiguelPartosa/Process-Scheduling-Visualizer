@@ -15,7 +15,7 @@ import {
   GeneralContextType,
 } from "./store/globalStateProvider";
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { NavIconButton } from "./components/NavIconButton.tsx";
 import { Link } from "react-router-dom";
 import JobSlider from "./components/JobSlider.tsx";
@@ -30,10 +30,8 @@ export type NavIconProps = {
 };
 
 function App() {
-  const { jobType, updateJobType, randomizeValues } = useContext(
-    GeneralContext
-  ) as GeneralContextType;
-  const [showCalculation, setShowCalculation] = useState(false);
+  const { jobType, updateJobType, randomizeValues, setShowCalculation } =
+    useContext(GeneralContext) as GeneralContextType;
   const styleActive =
     "tw-shadow-lg tw-bg-slate-500 tw-text-gray-800 tw-rounded-full";
   const activateStyle = (index: number) => {
@@ -73,7 +71,7 @@ function App() {
 
         <JobInput />
 
-        <div className="tw-flex tw-flex-row  tw-w-64 tw-justify-between tw-mt-auto tw-mb-6 tw-py-3 tw-items-center tw-px-3">
+        <div className="tw-flex tw-flex-row  tw-w-96 tw-justify-between tw-mt-auto tw-mb-6 tw-py-3 tw-items-center tw-px-3">
           <div
             className="tw-cursor-pointer tw-bg-slate-400 tw-text-gray-800 tw-font-bold tw-px-1 tw-rounded-sm tw-h-10 tw-text-sm tw-self-center tw-w-24 tw-scale-75"
             onClick={() => {
@@ -88,16 +86,15 @@ function App() {
             onClick={(e) => {
               e.preventDefault();
               setShowCalculation(true);
-              console.log("hello!");
             }}
           >
-            <div className="tw-cursor-pointer tw-bg-slate-500 tw-text-slate-200 tw-font-bold tw-py-1 tw-px-6 tw-rounded-full tw-text-lg">
-              Calculate
+            <div className="tw-cursor-pointer tw-bg-slate-500 tw-text-slate-200 tw-font-bold tw-py-1 tw-px-6 tw-rounded-full tw-text-lg tw-w-72">
+              Show Calculation
             </div>
           </Link>
         </div>
       </div>
-      <Calculations showCalculation={showCalculation} />
+      <Calculations />
     </>
   );
 }
