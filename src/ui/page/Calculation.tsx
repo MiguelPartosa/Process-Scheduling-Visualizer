@@ -4,6 +4,7 @@ import {
   AlgorithmType,
   GeneralContext,
   GeneralContextType,
+  Job,
 } from "../store/globalStateProvider";
 
 import {
@@ -16,25 +17,31 @@ import JobChart from "./Chart";
 
 const Calculations = () => {
   const { jobs, jobType } = useContext(GeneralContext) as GeneralContextType;
-
+  const inputJobs = {
+    ...jobs,
+    jobDetails: jobs.jobDetails.slice(0, jobs.totalJobs),
+  };
+  let calculatedJobs: Job[];
   switch (jobType) {
     case AlgorithmType.FirstComeFirstServe:
-      FirstComeFirstServe(jobs, jobType);
+      calculatedJobs = FirstComeFirstServe(inputJobs);
       break;
 
     case AlgorithmType.ShortestJobNext:
-      ShortestJobNext();
+      calculatedJobs = ShortestJobNext(inputJobs);
       break;
 
     case AlgorithmType.ShortestRemainingTime:
-      ShortestRemainingTime();
+      calculatedJobs = ShortestRemainingTime(inputJobs);
       break;
 
     case AlgorithmType.RoundRobin:
-      RoundRobin();
+      calculatedJobs = RoundRobin(inputJobs);
       break;
 
     default:
+      calculatedJobs = [];
+      console.error("Unsuported Algorithm Type");
       break;
   }
   return (
@@ -42,19 +49,6 @@ const Calculations = () => {
       <>
         <div className="tw-flex tw-flex-col tw-justify-around tw-border tw-h-96">
           <h1>Calculations</h1>
-          <h5>
-            Jobs:{" "}
-            {(() => {
-              return Array.from({ length: jobs.totalJobs }, (_, i) => (
-                <div key={i}>
-                  <br></br>
-                  {jobs.jobDetails[i].jobName}&nbsp;
-                  {jobs.jobDetails[i].jobTime}&nbsp;
-                  {jobs.jobDetails[i].arrivalTime}
-                </div>
-              ));
-            })()}
-          </h5>
           <h5>
             JobType:{" "}
             {(() => {
@@ -78,17 +72,27 @@ const Calculations = () => {
             </thead>
             <tbody>
               {(() => {
-                return Array.from({ length: jobs.totalJobs }, (_, i) => (
-                  <tr key={i}>
-                    <td>{jobs.jobDetails[i].jobName}</td>
-                    <td>{jobs.jobDetails[i].jobTime}</td>
-                    <td>{jobs.jobDetails[i].arrivalTime}</td>
-                  </tr>
-                ));
+                return Array.from({ length: jobs.totalJobs }, (_, i) => {
+                  const job = calculatedJobs[i];
+                  if (job === undefined) {
+                    console.error("something went wrong");
+                  }
+                  return job ? (
+                    <tr key={i}>
+                      <td>{job.jobName}</td>
+                      <td>{job.jobTime}</td>
+                      <td>{job.arrivalTime}</td>
+                    </tr>
+                  ) : (
+                    <tr key={i}>
+                      <td colSpan={3}>Job not found</td>
+                    </tr>
+                  );
+                });
               })()}
             </tbody>
           </table>
-          <JobChart jobs={jobs.jobDetails.slice(0, jobs.totalJobs)} />
+          <JobChart jobs={calculatedJobs} />
           <div className="tw-border tw-h-14"> Box</div>
         </div>
       </>

@@ -8,10 +8,13 @@ import {
   Title,
   Tooltip,
   Legend,
+  TooltipItem,
+  ChartOptions,
+  TooltipOptions,
 } from "chart.js";
 import { Job } from "../store/globalStateProvider";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-
+import ChartDataLabels, { Context } from "chartjs-plugin-datalabels";
+// TODO: add types for library contexts
 // Register Chart.js components
 ChartJS.register(
   BarElement,
@@ -36,7 +39,7 @@ enum JobColor {
 }
 
 const JobChart: React.FC<GanttChartProps> = ({ jobs }) => {
-  // Variable for graphS
+  // Only the values jobtime will be used as a value and not arrival time. It is assumed that calculation is done beforehand
   const datasetValues = jobs.map((job) => {
     return {
       label: job.jobName,
@@ -55,12 +58,12 @@ const JobChart: React.FC<GanttChartProps> = ({ jobs }) => {
   };
 
   // Chart options
-  const options = {
+  const options: ChartOptions<"bar"> = {
     indexAxis: "y" as const,
     layout: {
       padding: {
         // sometimes rightmost tick is cut off
-        right: 10
+        right: 10,
       },
     },
     scales: {
@@ -76,8 +79,12 @@ const JobChart: React.FC<GanttChartProps> = ({ jobs }) => {
           maxTicksLimit: undefined,
           sampleSize: jobEnds.length,
           padding: 1,
-          callback: (val: number) => {
-            if (val === 0 || jobEnds.includes(val)) return val;
+          callback: (val: string | number): number | null => {
+            const numericVal = val as number; // Assert that val is a number
+            if (numericVal === 0 || jobEnds.includes(numericVal)) {
+              return val as number;
+            }
+            return null;
           },
         },
       },
@@ -93,13 +100,33 @@ const JobChart: React.FC<GanttChartProps> = ({ jobs }) => {
           // weight: "bold",
           size: 12,
         },
-        formatter: (value: number, context:any) => {
+        formatter: (value: number, context: Context) => {
           return `${context.dataset.label}\n${value}`;
         },
       },
       legend: {
         display: false,
       },
+      tooltip: {
+        bodyAlign: "center",
+        titleAlign: "center",
+        callbacks: {
+          label: function (context: TooltipItem<"bar">) {
+            const datasetIndex = context.datasetIndex;
+
+            const jobName = context.dataset.label;
+            const jobTime = jobs[datasetIndex].jobTime;
+            const jobEnd = jobEnds[datasetIndex];
+            const jobArrival = jobs[datasetIndex].arrivalTime;
+            return [
+              `${jobName}`,
+              `Arrival: ${jobArrival}`,
+              `Time: ${jobTime}`,
+              `End: ${jobEnd}`,
+            ];
+          },
+        },
+      } as TooltipOptions<"bar">,
     },
   };
 
